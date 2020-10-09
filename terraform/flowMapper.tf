@@ -1,3 +1,34 @@
+resource "aws_iam_role_policy" "iam_policy_flowMapper" {
+  name = "iam_policy_flowMapper"
+  role = aws_iam_role.iam_for_flowMapper.id
+
+  policy = <<-EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+          "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        {
+      "Sid": "Stmt1602258244504",
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:SendMessageBatch"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+    ]
+  }
+  EOF
+}
+
 resource "aws_iam_role" "iam_for_flowMapper" {
   name = "iam_for_flowMapper"
 
@@ -23,7 +54,7 @@ resource "aws_lambda_function" "flowMapper" {
   filename      = "../lambdas/flowMapper/flowMapper.zip"
   function_name = "flowMapper"
   role          = aws_iam_role.iam_for_flowMapper.arn
-  handler       = "exports.handler"
+  handler       = "index.handler"
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:

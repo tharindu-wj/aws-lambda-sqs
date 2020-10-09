@@ -1,3 +1,25 @@
+resource "aws_iam_role_policy" "iam_policy_sqsTrigger" {
+  name = "iam_policy_sqsTrigger"
+  role = aws_iam_role.iam_for_sqsTrigger.id
+
+  policy = <<-EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+          "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        }
+    ]
+  }
+  EOF
+}
+
 resource "aws_iam_role" "iam_for_sqsTrigger" {
   name = "iam_for_sqsTrigger"
 
