@@ -14,7 +14,19 @@ resource "aws_iam_role_policy" "iam_policy_sqsTrigger" {
                 "logs:PutLogEvents"
             ],
             "Resource": "*"
-        }
+        },
+       {
+      "Sid": "Stmt1602260999597",
+      "Action": [
+       "sqs:DeleteMessage",
+        "sqs:DeleteMessageBatch",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
     ]
   }
   EOF
