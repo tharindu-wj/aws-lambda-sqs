@@ -54,3 +54,8 @@ resource "aws_lambda_function" "sqsTrigger" {
 
   runtime = "nodejs12.x"
 }
+
+# resource "aws_lambda_event_source_mapping" "sqsTrigger_sqs_mapping" {
+#   event_source_arn = "arn:aws:sqs:us-east-2:317127958808:flow-queue"
+#   function_name    = aws_lambda_function.sqsTrigger.arn
+# }
