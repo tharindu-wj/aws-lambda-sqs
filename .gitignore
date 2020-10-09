@@ -1,0 +1,11 @@
+.idea
+.vscode
+.DS_Store
+node_modules
+
+terraform/provider.tf
+terraform/.terraform
+terraform/terraform.tfstate.d/**
+terraform/terraform.tfstate.backup 
+
+*.zip
