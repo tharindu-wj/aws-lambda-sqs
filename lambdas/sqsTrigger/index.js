@@ -7,24 +7,34 @@ const lambda = new AWS.Lambda();
 /**
  *
  * @param {*} event
- * {
- *        lambdaName: '',
- *        payload: {}
- *      }
+ * Records: [
+ *  {
+ *    body: {
+ *      lambdaName: '',
+ *      payload: {}
+ *    }
+ *  }
+ * ]
  * @param {*} context
  */
-exports.handler = async function (originalEvent, context) {
+exports.handler = async function (event, context) {
   console.log("SQS Poller Triggered");
-  console.log(JSON.stringify(originalEvent));
-  const event = JSON.parse(originalEvent);
+  console.log(JSON.stringify(event));
+  const records = event.Records;
 
-  var params = {
-    FunctionName: event.lambdaName,
-    InvocationType: "Event",
-    Payload: JSON.stringify(payload),
-  };
+  const recordPromises = records.map((record) => {
+    const body = JSON.parse(record.body);
+    const params = {
+      FunctionName: body.lambdaName,
+      InvocationType: "Event",
+      Payload: JSON.stringify(body.payload),
+    };
 
-  const response = await lambda.invoke(params).promise();
+    return lambda.invoke(params).promise();
+  });
+
+  const response = await Promise.all(recordPromises)
+
   console.log(JSON.stringify(response));
   console.log("SQS Poller Completed");
   return {

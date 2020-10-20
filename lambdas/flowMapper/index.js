@@ -20,11 +20,13 @@ const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
  */
 exports.handler = async function (event, context) {
   console.log("FlowMapper Lambda tiggered");
+    console.log(event);
+
   const params = {
     // Remove DelaySeconds parameter and value for FIFO queues
     DelaySeconds: 0,
     MessageAttributes: {},
-    MessageBody: JSON.stringify({...event.body, currentTime: new Date().toLocaleString()}),
+    MessageBody: JSON.stringify({...JSON.parse( event.body), currentTime: new Date().toLocaleString()}),
     // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
     // MessageGroupId: "Group1",  // Required for FIFO queues
     QueueUrl: "https://sqs.us-east-2.amazonaws.com/317127958808/flow-queue",
