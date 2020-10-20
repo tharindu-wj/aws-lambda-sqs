@@ -26,6 +26,15 @@ resource "aws_iam_role_policy" "iam_policy_sqsTrigger" {
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Sid": "Stmt1603206180406",
+      "Action": [
+        "lambda:InvokeAsync",
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     }
     ]
   }
