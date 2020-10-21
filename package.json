@@ -10,9 +10,9 @@
     "build-asyncFlow": "cd lambdas/flows/asyncFlow && zip -r asyncFlow .",
     "build_lambdas": "npm run build-flowMapper && npm run build-sqsTrigger",
 
-    "rebuild-flowMapper": "cd lambdas/flowMapper && rm flowMapper.zip && zip -r flowMapper .",
-    "rebuild-sqsTrigger": "cd lambdas/sqsTrigger && rm sqsTrigger.zip && zip -r sqsTrigger .",
-    "rebuild-asyncFlow": "cd lambdas/flows/asyncFlow && rm asyncFlow.zip && zip -r asyncFlow .",
+    "rebuild-flowMapper": "cd lambdas/flowMapper && rm flowMapper.zip && npm ci && zip -r flowMapper .",
+    "rebuild-sqsTrigger": "cd lambdas/sqsTrigger && rm sqsTrigger.zip && npm ci &&  zip -r sqsTrigger .",
+    "rebuild-asyncFlow": "cd lambdas/flows/asyncFlow && rm asyncFlow.zip && npm ci && zip -r asyncFlow .",
     "rebuild_lambdas": "npm run rebuild-flowMapper && npm run rebuild-sqsTrigger && npm run rebuild-asyncFlow",
 
     "deploy_lambdas": "cd terraform && terraform apply",

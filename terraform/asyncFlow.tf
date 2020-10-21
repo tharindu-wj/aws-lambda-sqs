@@ -14,6 +14,19 @@ resource "aws_iam_role_policy" "iam_policy_asyncFlow" {
                 "logs:PutLogEvents"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+            ],
+            "Resource": [
+                "*"
+            ]
         }
     ]
   }
@@ -53,6 +66,10 @@ resource "aws_lambda_function" "asyncFlow" {
   source_code_hash = filebase64sha256("../lambdas/flows/asyncFlow/asyncFlow.zip")
 
   runtime = "nodejs12.x"
+
+  tracing_config {
+    mode = "Active"
+  }
 
   environment {
     variables = {

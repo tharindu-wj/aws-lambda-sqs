@@ -35,7 +35,20 @@ resource "aws_iam_role_policy" "iam_policy_sqsTrigger" {
       ],
       "Effect": "Allow",
       "Resource": "*"
-    }
+    },
+    {
+            "Effect": "Allow",
+            "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
     ]
   }
   EOF
@@ -74,6 +87,10 @@ resource "aws_lambda_function" "sqsTrigger" {
   source_code_hash = filebase64sha256("../lambdas/sqsTrigger/sqsTrigger.zip")
 
   runtime = "nodejs12.x"
+
+  tracing_config {
+    mode = "Active"
+  }
 }
 
 # resource "aws_lambda_event_source_mapping" "sqsTrigger_sqs_mapping" {

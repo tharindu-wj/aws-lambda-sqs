@@ -1,10 +1,13 @@
+const { DateTime } = require("luxon");
 // Load the AWS SDK for Node.js
 const AWS = require("aws-sdk");
+var AWSXRay = require("aws-xray-sdk-core");
+
 // Set the region
 AWS.config.update({ region: "us-east-2" });
 
 // Create an SQS service object
-const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
+const sqs = AWSXRay.captureAWSClient(new AWS.SQS({ apiVersion: "2012-11-05" }));
 
 /**
  *
@@ -20,13 +23,17 @@ const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
  */
 exports.handler = async function (event, context) {
   console.log("FlowMapper Lambda tiggered");
-    console.log(event);
+  console.log(event);
+  const triggeredTime = DateTime.local().setZone("Asia/Kolkata").toString();
 
   const params = {
     // Remove DelaySeconds parameter and value for FIFO queues
     DelaySeconds: 0,
     MessageAttributes: {},
-    MessageBody: JSON.stringify({...JSON.parse( event.body), currentTime: new Date().toLocaleString()}),
+    MessageBody: JSON.stringify({
+      ...JSON.parse(event.body),
+      triggeredTime,
+    }),
     // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
     // MessageGroupId: "Group1",  // Required for FIFO queues
     QueueUrl: "https://sqs.us-east-2.amazonaws.com/317127958808/flow-queue",

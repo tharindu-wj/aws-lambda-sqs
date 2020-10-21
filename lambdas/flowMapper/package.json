@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-xray-sdk-core": "^3.2.0",
+    "luxon": "^1.25.0"
+  }
 }

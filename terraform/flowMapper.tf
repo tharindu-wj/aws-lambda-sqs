@@ -23,7 +23,20 @@ resource "aws_iam_role_policy" "iam_policy_flowMapper" {
       ],
       "Effect": "Allow",
       "Resource": "*"
-    }
+    },
+    {
+            "Effect": "Allow",
+            "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
     ]
   }
   EOF
@@ -62,6 +75,10 @@ resource "aws_lambda_function" "flowMapper" {
   source_code_hash = filebase64sha256("../lambdas/flowMapper/flowMapper.zip")
 
   runtime = "nodejs12.x"
+
+  tracing_config {
+    mode = "Active"
+  }
 
   environment {
     variables = {
