@@ -5,18 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-flowMapper": "cd lambdas/flowMapper && zip -r flowMapper .",
-    "build-sqsTrigger": "cd lambdas/sqsTrigger && zip -r sqsTrigger .",
-    "build-asyncFlow": "cd lambdas/flows/asyncFlow && zip -r asyncFlow .",
-    "build_lambdas": "npm run build-flowMapper && npm run build-sqsTrigger",
 
-    "rebuild-flowMapper": "cd lambdas/flowMapper && rm flowMapper.zip && npm ci && zip -r flowMapper .",
-    "rebuild-sqsTrigger": "cd lambdas/sqsTrigger && rm sqsTrigger.zip && npm ci &&  zip -r sqsTrigger .",
-    "rebuild-asyncFlow": "cd lambdas/flows/asyncFlow && rm asyncFlow.zip && npm ci && zip -r asyncFlow .",
-    "rebuild_lambdas": "npm run rebuild-flowMapper && npm run rebuild-sqsTrigger && npm run rebuild-asyncFlow",
+    "build-flowMapper": "cd lambdas/flowMapper && rm flowMapper.zip || true && npm ci --only=prod && zip -r flowMapper .",
+    "build-sqsTrigger": "cd lambdas/sqsTrigger && rm sqsTrigger.zip || true && npm ci --only=prod &&  zip -r sqsTrigger .",
+    "build-asyncFlow": "cd lambdas/flows/asyncFlow && rm asyncFlow.zip || true && npm ci --only=prod && zip -r asyncFlow .",
+    "build-dbProxy": "cd lambdas/dbProxy && rm dbProxy.zip || true && npm ci --only=prod && zip -r dbProxy .",
 
-    "deploy_lambdas": "cd terraform && terraform apply",
-    "deploy": "npm run rebuild_lambdas && npm run deploy_lambdas"
+    "build_lambdas": "npm run build-flowMapper && npm run build-sqsTrigger && npm run build-asyncFlow && npm run build-dbProxy",
+
+    "terraform_build": "cd terraform && terraform apply",
+
+    "deploy": "npm run build_lambdas && npm run terraform_build"
 
   },
   "keywords": [],
