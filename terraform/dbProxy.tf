@@ -31,9 +31,10 @@ resource "aws_iam_role_policy" "iam_policy_dbProxy" {
         {
       "Sid": "Stmt1603289301449",
       "Action": [
-        "dynamodb:DeleteItem",
+         "dynamodb:DeleteItem",
         "dynamodb:GetItem",
         "dynamodb:PutItem",
+        "dynamodb:Query",
         "dynamodb:UpdateItem"
       ],
       "Effect": "Allow",

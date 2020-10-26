@@ -2,7 +2,7 @@ const { DateTime } = require("luxon");
 const { v4: uuidv4 } = require("uuid");
 // Load the AWS SDK for Node.js
 const AWSXRay = require("aws-xray-sdk-core");
-const AWS = AWSXRay.captureAWS(require('aws-sdk'));
+const AWS = AWSXRay.captureAWS(require("aws-sdk"));
 
 // Set the region
 AWS.config.update({ region: "us-east-2" });
@@ -20,9 +20,9 @@ exports.handler = async function (event, context) {
   console.log("DBProxy Lambda tiggered");
   console.log(event);
 
-  await create(event.item);
+  //const response = await create(event.item);
+  const response = await dbMethods[event.action](event.item);
 
-  const response = {};
   console.log(`DynmoDB Response: ${JSON.stringify(response)}`);
   console.log("DBProxy Lambda completed");
   return {
@@ -31,20 +31,34 @@ exports.handler = async function (event, context) {
   };
 };
 
-const create = (data) => {
-  const createdAt = DateTime.local().setZone("Asia/Kolkata").toString();
-  const item = {data};
-  item._id = uuidv4();
-  item.createdAt = createdAt;
+const dbMethods = {
+  create: (data) => {
+    const createdAt = DateTime.local().setZone("Asia/Kolkata").toString();
+    const item = { data };
+    item.applicationId = uuidv4();
+    item.createdAt = createdAt;
 
-  return dynamodb
-    .put({
+    return dynamodb
+      .put({
+        TableName: tableName,
+        Item: item,
+      })
+      .promise();
+  },
+  getById: (data) => {
+    const { applicationId } = data;
+    let params = {
       TableName: tableName,
-      Item: item,
-    })
-    .promise();
-};
+      KeyConditionExpression: "applicationId = :applicationId",
+      ExpressionAttributeValues: {
+        ":applicationId": applicationId,
+      },
+      Limit: 1,
+    };
 
-const getById = (id, data) => {};
-const update = (id, data) => {};
-const remove = (id) => {};
+    return dynamodb.query(params).promise();
+  },
+
+  update: (id, data) => {},
+  remove: (id) => {},
+};
