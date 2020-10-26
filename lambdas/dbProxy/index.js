@@ -19,7 +19,6 @@ const tableName = "Applications";
 exports.handler = async function (event, context) {
   console.log("DBProxy Lambda tiggered");
   console.log(event);
-
   //const response = await create(event.item);
   const response = await dbMethods[event.action](event.item);
 
