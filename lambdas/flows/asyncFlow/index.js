@@ -21,11 +21,14 @@ const lambda = AWSXRay.captureAWSClient(new AWS.Lambda());
 exports.handler = async function (event, context) {
   console.log("Async flow triggered");
   console.log(JSON.stringify(event));
+  const { tracingId } = event;
+  console.log("Trace id", tracingId);
 
   const params = {
     FunctionName: "dbProxy",
     InvocationType: "RequestResponse",
-    Payload:JSON.stringify  ({
+    Payload: JSON.stringify({
+      tracingId,
       action: "getById",
       item: {
         applicationId: "9676aa8c-8afa-4dd4-a813-9ce51c7465ab",

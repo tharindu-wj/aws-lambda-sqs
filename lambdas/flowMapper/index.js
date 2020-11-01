@@ -25,6 +25,8 @@ exports.handler = async function (event, context) {
   console.log("FlowMapper Lambda tiggered");
   console.log(event);
   const triggeredTime = DateTime.local().setZone("Asia/Kolkata").toString();
+  const tracingId = event.headers["X-Amzn-Trace-Id"];
+  console.log("Trace id", tracingId);
 
   const params = {
     // Remove DelaySeconds parameter and value for FIFO queues
@@ -33,6 +35,7 @@ exports.handler = async function (event, context) {
     MessageBody: JSON.stringify({
       ...JSON.parse(event.body),
       triggeredTime,
+      tracingId,
     }),
     // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
     // MessageGroupId: "Group1",  // Required for FIFO queues
