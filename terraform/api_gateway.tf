@@ -1,11 +1,35 @@
-resource "aws_api_gateway_rest_api" "orch_test" {
-  name        = "Orch Test"
-  description = "Terraform Serverless Application"
+resource "aws_api_gateway_stage" "test" {
+  stage_name    = "test"
+  rest_api_id   = aws_api_gateway_rest_api.test.id
+  deployment_id = aws_api_gateway_deployment.test.id
+  xray_tracing_enabled  = true
+}
+
+resource "aws_api_gateway_rest_api" "test" {
+  name        = "MyDemoAPI"
+  description = "This is my API for demonstration purposes"
   endpoint_configuration {
     types = ["REGIONAL"]
   }
 }
 
+resource "aws_api_gateway_deployment" "test" {
+  depends_on  = [aws_api_gateway_integration.test]
+  rest_api_id = aws_api_gateway_rest_api.test.id
+  stage_name  = "dev"
+}
+
+resource "aws_api_gateway_method_settings" "s" {
+  rest_api_id = aws_api_gateway_rest_api.test.id
+  stage_name  = aws_api_gateway_stage.test.stage_name
+  method_path = "${aws_api_gateway_resource.test.path_part}/${aws_api_gateway_method.test.http_method}"
+
+  settings {
+    metrics_enabled        = true
+    data_trace_enabled     = true
+    logging_level          = "INFO"
+  }
+}
 
 resource "aws_api_gateway_account" "demo" {
   cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
@@ -55,22 +79,4 @@ resource "aws_iam_role_policy" "cloudwatch" {
     ]
 }
 EOF
-}
-
-resource "aws_api_gateway_method_settings" "general_settings" {
-  rest_api_id = aws_api_gateway_rest_api.orch_test.id
-  stage_name  = "test"
-  method_path = "*/*"
-  
-  settings {
-    # Enable CloudWatch logging and metrics
-    metrics_enabled        = true
-    data_trace_enabled     = true
-    logging_level          = "INFO"
-
-
-    # Limit the rate of calls to prevent abuse and unwanted charges
-    throttling_rate_limit  = 100
-    throttling_burst_limit = 50
-  }
 }
