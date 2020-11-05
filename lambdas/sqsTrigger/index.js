@@ -24,8 +24,8 @@ exports.handler = async function (event, context) {
   const records = event.Records;
 
   const recordPromises = records.map((record) => {
-    const body = JSON.parse(record.body);
-    const { lambdaName, tracingId, ...otherPayload } = body;
+    const messageBody = JSON.parse(record.body);
+    const { lambdaName, tracingId, ...otherPayload } = messageBody.body;
     const params = {
       FunctionName: lambdaName,
       InvocationType: "Event",

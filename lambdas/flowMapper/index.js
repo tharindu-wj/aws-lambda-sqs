@@ -33,13 +33,24 @@ exports.handler = async function (event, context) {
     DelaySeconds: 0,
     MessageAttributes: {},
     MessageBody: JSON.stringify({
-      ...JSON.parse(event.body),
-      triggeredTime,
-      tracingId,
+      headers: {
+        "X-Amzn-Trace-Id": tracingId,
+      },
+      body: {
+        ...JSON.parse(event.body),
+        triggeredTime,
+        tracingId,
+      },
     }),
     // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
     // MessageGroupId: "Group1",  // Required for FIFO queues
     QueueUrl: "https://sqs.us-east-2.amazonaws.com/317127958808/flow-queue",
+    MessageSystemAttributes: {
+      AWSTraceHeader: {
+        DataType: "String",
+        StringValue: tracingId,
+      },
+    },
   };
 
   const response = await sqs.sendMessage(params).promise();
