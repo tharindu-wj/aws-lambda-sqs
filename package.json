@@ -9,9 +9,10 @@
     "build-flowMapper": "cd lambdas/flowMapper && rm flowMapper.zip || true && npm ci --only=prod && zip -r flowMapper .",
     "build-sqsTrigger": "cd lambdas/sqsTrigger && rm sqsTrigger.zip || true && npm ci --only=prod &&  zip -r sqsTrigger .",
     "build-asyncFlow": "cd lambdas/flows/asyncFlow && rm asyncFlow.zip || true && npm ci --only=prod && zip -r asyncFlow .",
+    "build-middyTest": "cd lambdas/flows/middyTest && rm middyTest.zip || true && npm ci --only=prod && zip -r middyTest .",
     "build-dbProxy": "cd lambdas/dbProxy && rm dbProxy.zip || true && npm ci --only=prod && zip -r dbProxy .",
 
-    "build_lambdas": "npm run build-flowMapper && npm run build-sqsTrigger && npm run build-asyncFlow && npm run build-dbProxy",
+    "build_lambdas": "npm run build-flowMapper && npm run build-sqsTrigger && npm run build-asyncFlow && npm run build-dbProxy && npm run build-middyTest",
 
     "terraform_build": "cd terraform && terraform apply",
 
