@@ -24,23 +24,23 @@ exports.handler = async function (event, context) {
   const records = event.Records;
 
   const recordPromises = records.map((record) => {
-    const body = JSON.parse(record.body);
+    const messageBody = JSON.parse(record.body);
     const traceHeader = record.attributes.AWSTraceHeader.split(';');
     const trace_id = traceHeader[0].split('=')[1];
-    const parent_id = traceHeader[1].split('=')[1];
-    const sampled = traceHeader[2].split('=')[1];
+    //const parent_id = traceHeader[1].split('=')[1];
+    //const sampled = traceHeader[2].split('=')[1];
     console.log({ traceHeader });
 
     const segment = AWSXRay.getSegment();
-    segment.trace_id = trace_id;
-    segment.parent_id = parent_id;
+    //segment.trace_id = trace_id;
+    //segment.parent_id = parent_id;
     // console.dir({segment1: segment}, {depth:null})
 
     //segment.init('sqsTriggerCustom', trace_id, parent_id)
 
     console.log({ segment2: JSON.stringify(segment) });
 
-    const { lambdaName, tracingId, ...otherPayload } = body;
+    const { lambdaName, tracingId, ...otherPayload } = messageBody.body;
     const params = {
       FunctionName: lambdaName,
       InvocationType: 'Event',
