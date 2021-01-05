@@ -22,9 +22,11 @@ exports.handler = async function (event, context) {
   console.log('SQS Poller Triggered');
   console.log(JSON.stringify(event));
   const records = event.Records;
+   console.log(`Record count: ${records.length}`);
 
   const recordPromises = records.map((record) => {
     const messageBody = JSON.parse(record.body);
+    
     const traceHeader = record.attributes.AWSTraceHeader.split(';');
     const trace_id = traceHeader[0].split('=')[1];
     //const parent_id = traceHeader[1].split('=')[1];
@@ -41,6 +43,10 @@ exports.handler = async function (event, context) {
     console.log({ segment2: JSON.stringify(segment) });
 
     const { lambdaName, tracingId, ...otherPayload } = messageBody.body;
+    
+    //throw random error
+    if(otherPayload.payload.trigger % 2 === 0) throw new Error('Random Error');
+    
     const params = {
       FunctionName: lambdaName,
       InvocationType: 'Event',
